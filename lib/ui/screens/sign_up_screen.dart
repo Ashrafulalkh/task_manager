@@ -1,19 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends State<SignUpScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _firstNameTEController = TextEditingController();
+  final TextEditingController _lastNameTEController = TextEditingController();
+  final TextEditingController _mobileTEController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: 120,
                   ),
                   Text(
-                    'Get Started With',
+                    'Join With Us',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
@@ -41,6 +43,34 @@ class _SignInScreenState extends State<SignInScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       hintText: 'Email',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  TextFormField(
+                    controller: _firstNameTEController,
+                    decoration: const InputDecoration(
+                      hintText: 'First Name',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  TextFormField(
+                    controller: _lastNameTEController,
+                    decoration: const InputDecoration(
+                      hintText: 'Last Name',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  TextFormField(
+                    controller: _mobileTEController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      hintText: 'Mobile',
                     ),
                   ),
                   const SizedBox(
@@ -62,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(
                     height: 36,
                   ),
-                  _buildForgotPasswordAndGotoSignupSection()
+                  _buildBackToSignInSection(),
                 ],
               ),
             ),
@@ -72,54 +102,41 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildForgotPasswordAndGotoSignupSection() {
+  Widget _buildBackToSignInSection() {
     return Center(
-      child: Column(
-        children: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Forgot Password?',
-            ),
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.4,
           ),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                color: Colors.black.withOpacity(0.8),
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.4,
+          text: "Have account? ",
+          children: [
+            TextSpan(
+              text: 'Sign In',
+              style: const TextStyle(
+                color: AppColors.themeColor,
               ),
-              text: "Don't have an account? ",
-              children: [
-                TextSpan(
-                  text: 'Sign Up',
-                  style: const TextStyle(
-                    color: AppColors.themeColor,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = _onTapSignInButton,
-                ),
-              ],
+              recognizer: TapGestureRecognizer()..onTap = _onTapSignInButton,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   void _onTapSignInButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
-      ),
-    );
+    Navigator.pop(context);
   }
 
   @override
   void dispose() {
     super.dispose();
     _emailTEController.dispose();
+    _firstNameTEController.dispose();
+    _lastNameTEController.dispose();
+    _mobileTEController.dispose();
     _passwordTEController.dispose();
   }
 }

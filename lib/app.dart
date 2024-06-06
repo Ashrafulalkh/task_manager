@@ -41,6 +41,14 @@ class TaskManager extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.grey,
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       )
     );
   }
