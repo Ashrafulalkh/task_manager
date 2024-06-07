@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/sign_up_screen.dart';
+import 'package:task_manager/ui/screens/auth%20screen/email_verification_screen.dart';
+import 'package:task_manager/ui/screens/auth%20screen/sign_up_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 
@@ -22,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(35.0),
+              padding: const EdgeInsets.all(40.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,7 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Column(
         children: [
           TextButton(
-            onPressed: () {},
+            onPressed: _onTapForgotPasswordButton,
             child: const Text(
               'Forgot Password?',
             ),
@@ -97,7 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     color: AppColors.themeColor,
                   ),
                   recognizer: TapGestureRecognizer()
-                    ..onTap = _onTapSignInButton,
+                    ..onTap = _onTapSignUpButton,
                 ),
               ],
             ),
@@ -107,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _onTapSignInButton() {
+  void _onTapSignUpButton() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -115,11 +116,19 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+  void _onTapForgotPasswordButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const EmailVerificationScreen(),
+      ),
+    );
+  }
 
   @override
   void dispose() {
-    super.dispose();
     _emailTEController.dispose();
     _passwordTEController.dispose();
+    super.dispose();
   }
 }

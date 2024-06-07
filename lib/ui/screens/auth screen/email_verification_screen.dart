@@ -1,21 +1,19 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/auth%20screen/pin_verification_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class EmailVerificationScreen extends StatefulWidget {
+  const EmailVerificationScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignInScreenState();
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
 }
 
-class _SignInScreenState extends State<SignUpScreen> {
+class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTEController = TextEditingController();
-  final TextEditingController _firstNameTEController = TextEditingController();
-  final TextEditingController _lastNameTEController = TextEditingController();
-  final TextEditingController _mobileTEController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,7 @@ class _SignInScreenState extends State<SignUpScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(35.0),
+              padding: const EdgeInsets.all(40.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -32,8 +30,12 @@ class _SignInScreenState extends State<SignUpScreen> {
                     height: 120,
                   ),
                   Text(
-                    'Join With Us',
+                    'Email Verification',
                     style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Text(
+                    'A 6 digits verification pin will be sent to your email address',
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(
                     height: 24,
@@ -46,53 +48,16 @@ class _SignInScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _firstNameTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'First Name',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _lastNameTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'Last Name',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _mobileTEController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      hintText: 'Mobile',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _passwordTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
-                    ),
-                  ),
-                  const SizedBox(
                     height: 16,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _onTapElevatedButton,
                     child: const Icon(Icons.arrow_circle_right_outlined),
                   ),
                   const SizedBox(
                     height: 36,
                   ),
-                  _buildBackToSignInSection(),
+                  _buildBackToSignInSection()
                 ],
               ),
             ),
@@ -130,13 +95,18 @@ class _SignInScreenState extends State<SignUpScreen> {
     Navigator.pop(context);
   }
 
+  void _onTapElevatedButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PinVerificationScreen(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
-    super.dispose();
     _emailTEController.dispose();
-    _firstNameTEController.dispose();
-    _lastNameTEController.dispose();
-    _mobileTEController.dispose();
-    _passwordTEController.dispose();
+    super.dispose();
   }
 }
