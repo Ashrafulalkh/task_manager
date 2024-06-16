@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
+import 'package:task_manager/ui/utilities/app_constants.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _SignInScreenState extends State<SignUpScreen> {
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,75 +27,117 @@ class _SignInScreenState extends State<SignUpScreen> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 120,
-                  ),
-                  Text(
-                    'Join With Us',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  TextFormField(
-                    controller: _emailTEController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      hintText: 'Email',
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 120,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _firstNameTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'First Name',
+                    Text(
+                      'Join With Us',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _lastNameTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'Last Name',
+                    const SizedBox(
+                      height: 24,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _mobileTEController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      hintText: 'Mobile',
+                    TextFormField(
+                      controller: _emailTEController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                      ),
+                      validator: (String? value){
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter Your Email';
+                        }
+                        if(AppConstants.emailRegExp.hasMatch(value!) == false) {
+                          return 'Enter Valid Email Address';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  TextFormField(
-                    controller: _passwordTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
+                    const SizedBox(
+                      height: 8,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.arrow_circle_right_outlined),
-                  ),
-                  const SizedBox(
-                    height: 36,
-                  ),
-                  _buildBackToSignInSection(),
-                ],
+                    TextFormField(
+                      controller: _firstNameTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'First Name',
+                      ),
+                      validator: (String? value){
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter Your First Name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _lastNameTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'Last Name',
+                      ),
+                      validator: (String? value){
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter Your Last Name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      controller: _mobileTEController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        hintText: 'Mobile',
+                      ),
+                      validator: (String? value){
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter Your Mobile Number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    TextFormField(
+                      obscureText: true,
+                      controller: _passwordTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                      ),
+                      validator: (String? value){
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter Your Password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()){
+                          //TODO
+                        }
+                      },
+                      child: const Icon(Icons.arrow_circle_right_outlined),
+                    ),
+                    const SizedBox(
+                      height: 36,
+                    ),
+                    _buildBackToSignInSection(),
+                  ],
+                ),
               ),
             ),
           ),
