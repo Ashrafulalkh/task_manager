@@ -25,7 +25,7 @@ class _SignInScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _showPassword = false;
-  bool _registrationInPorgress = false;
+  bool _registrationInprogress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class _SignInScreenState extends State<SignUpScreen> {
                             icon: Icon(_showPassword
                                 ? Icons.visibility_off
                                 : Icons.visibility),
-                          )),
+                          ),),
                       validator: (String? value) {
                         if (value?.trim().isEmpty ?? true) {
                           return 'Enter Your Password';
@@ -144,7 +144,7 @@ class _SignInScreenState extends State<SignUpScreen> {
                       height: 16,
                     ),
                     Visibility(
-                      visible: _registrationInPorgress == false,
+                      visible: _registrationInprogress == false,
                       replacement: const Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -172,7 +172,7 @@ class _SignInScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _register() async {
-    _registrationInPorgress = true;
+    _registrationInprogress = true;
     if (mounted) {
       setState(() {});
     }
@@ -188,7 +188,7 @@ class _SignInScreenState extends State<SignUpScreen> {
     NetworkResponse response =
         await NetworkCaller.postRequest(Urls.registration, body: requestInput);
 
-    _registrationInPorgress = false;
+    _registrationInprogress = false;
     if (mounted) {
       setState(() {});
     }
