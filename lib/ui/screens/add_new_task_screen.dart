@@ -16,11 +16,10 @@ class AddNewTaskScreen extends StatefulWidget {
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController =
-      TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final bool _addNewTaskInProgress = false;
+  bool _addNewTaskInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +86,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   }
 
   Future<void> _addNewTask() async {
-    _addNewTaskInProgress == true;
+    _addNewTaskInProgress = true;
     if (mounted) {
       setState(() {});
     }
@@ -100,7 +99,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       Urls.createTask,
       body: requestData,
     );
-    _addNewTaskInProgress == false;
+    _addNewTaskInProgress = false;
     if (mounted) {
       setState(() {});
     }

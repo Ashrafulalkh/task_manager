@@ -11,6 +11,7 @@ import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/utilities/app_constants.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
+import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _showPassword = false;
-  final bool _signInApiInProgress = false;
+  bool _signInApiInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     Visibility(
                       visible: _signInApiInProgress == false,
-                      replacement: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      replacement: const CenteredProgressIndicator(),
                       child: ElevatedButton(
                         onPressed: () {
                           _onTapNextButton();
@@ -167,7 +166,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _singIn() async {
-    _signInApiInProgress == true;
+    _signInApiInProgress = true;
     if (mounted) {
       setState(() {});
     }
@@ -180,7 +179,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final NetworkResponse networkResponse =
         await NetworkCaller.postRequest(Urls.login, body: requestData);
 
-    _signInApiInProgress == false;
+    _signInApiInProgress = false;
     if (mounted) {
       setState(() {});
     }
@@ -190,7 +189,7 @@ class _SignInScreenState extends State<SignInScreen> {
       await AuthController.saveUserAccessToken(loginModel.token!);
       await AuthController.saveUserData(loginModel.userModel!);
 
-      if(mounted) {
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -199,7 +198,7 @@ class _SignInScreenState extends State<SignInScreen> {
         );
       }
     } else {
-      if(mounted) {
+      if (mounted) {
         showSnackBarMassage(
           context,
           networkResponse.errorMassage ??
