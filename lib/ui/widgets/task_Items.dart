@@ -1,12 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/data/models/network_response.dart';
 import 'package:task_manager/ui/data/models/task_model.dart';
+import 'package:task_manager/ui/data/network_caller/network_caller.dart';
+import 'package:task_manager/ui/data/utilities/urls.dart';
+import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
-class TaskItems extends StatelessWidget {
+class TaskItems extends StatefulWidget {
   const TaskItems({
-    super.key, required this.taskModel,
+    super.key,
+    required this.taskModel,
+    required this.onUpdateTask,
   });
 
   final TaskModel taskModel;
+  final VoidCallback onUpdateTask;
+
+  @override
+  State<TaskItems> createState() => _TaskItemsState();
+}
+
+class _TaskItemsState extends State<TaskItems> {
+  bool _deleteInProgress = false;
+  bool _editInProgress = false;
+  String dropdownValue = '';
+
+  List<String> statusList = ['New', 'Completed', 'In Progress', 'Cancelled'];
+
+  @override
+  void initState() {
+    dropdownValue = widget.taskModel.status!;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +39,13 @@ class TaskItems extends StatelessWidget {
       elevation: 0,
       color: Colors.white,
       child: ListTile(
-        title: Text(taskModel.title ?? 'Unknown'),
+        title: Text(widget.taskModel.title ?? 'Unknown'),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(taskModel.description ?? 'Unknown'),
-             Text(
-              'Date: ${taskModel.createdDate}',
+            Text(widget.taskModel.description ?? 'Unknown'),
+            Text(
+              'Date: ${widget.taskModel.createdDate}',
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.w600),
             ),
@@ -28,22 +53,50 @@ class TaskItems extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  label: Text(taskModel.status ?? 'New'),
+                  label: Text(widget.taskModel.status ?? 'New'),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 ),
                 ButtonBar(
                   children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit),
+                    Visibility(
+                      visible: _editInProgress == false,
+                      replacement: const CenteredProgressIndicator(),
+                      child: PopupMenuButton<String>(
+                        icon: const Icon(Icons.edit),
+                        onSelected: (String selected) {
+                          dropdownValue = selected;
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return statusList.map((String value) {
+                            return PopupMenuItem<String>(
+                              value: value,
+                              child: ListTile(
+                                title: Text(value),
+                                trailing: dropdownValue == value
+                                    ? const Icon(Icons.done)
+                                    : null,
+                              ),
+                            );
+                          }).toList();
+                        },
+                      ),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.delete),
+                    Visibility(
+                      visible: _deleteInProgress == false,
+                      replacement: const CenteredProgressIndicator(),
+                      child: IconButton(
+                        onPressed: () {
+                          _deleteTask();
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
                     ),
                   ],
                 ),
@@ -53,5 +106,27 @@ class TaskItems extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _deleteTask() async {
+    _deleteInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.deleteTask(widget.taskModel.sId!));
+    if (response.isSuccess) {
+      widget.onUpdateTask();
+    } else {
+      if (mounted) {
+        showSnackBarMassage(context,
+            response.errorMassage ?? 'Task Count By Status Failed! Try Again');
+      }
+    }
+    _deleteInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

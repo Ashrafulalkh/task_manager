@@ -39,7 +39,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const[
-          BottomNavigationBarItem(icon: Icon(Icons.create),label: 'New'),
+          BottomNavigationBarItem(icon: Icon(Icons.create),label: 'New Task'),
           BottomNavigationBarItem(icon: Icon(Icons.done),label: 'Completed'),
           BottomNavigationBarItem(icon: Icon(Icons.ac_unit),label: 'In Progress'),
           BottomNavigationBarItem(icon: Icon(Icons.clear),label: 'Cancelled'),
