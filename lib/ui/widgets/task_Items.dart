@@ -25,7 +25,7 @@ class _TaskItemsState extends State<TaskItems> {
   bool _editInProgress = false;
   String dropdownValue = '';
 
-  List<String> statusList = ['New', 'Completed', 'In Progress', 'Cancelled'];
+  List<String> statusList = ['New', 'Completed', 'InProgress', 'Cancelled'];
 
   @override
   void initState() {
@@ -69,6 +69,7 @@ class _TaskItemsState extends State<TaskItems> {
                         icon: const Icon(Icons.edit),
                         onSelected: (String selected) {
                           dropdownValue = selected;
+                          _editTaskStatus();
                           if (mounted) {
                             setState(() {});
                           }
@@ -128,5 +129,30 @@ class _TaskItemsState extends State<TaskItems> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future<void> _editTaskStatus() async {
+    _editInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+        Urls.editTask(widget.taskModel.sId!, dropdownValue));
+
+    if(response.isSuccess) {
+      widget.onUpdateTask();
+    }else {
+      if(mounted) {
+        showSnackBarMassage(context,
+            response.errorMassage ?? 'Task Status Update Failed! Try Again');
+      }
+    }
+
+    _editInProgress = false;
+    if(mounted) {
+      setState(() {});
+    }
+
   }
 }
