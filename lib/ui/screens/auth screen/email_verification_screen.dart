@@ -119,7 +119,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const PinVerificationScreen(),
+            builder: (context) =>  PinVerificationScreen(email: _emailTEController.text.trim(),
+
+            ),
           ),
         );
         showSnackBarMassage(context, 'OTP Send To Your Mail Successfully');
