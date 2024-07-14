@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
+import 'package:task_manager/ui/controller/sign_in_controller.dart';
 import 'package:task_manager/ui/data/models/login_model.dart';
 import 'package:task_manager/ui/data/models/network_response.dart';
 import 'package:task_manager/ui/data/network_caller/network_caller.dart';
@@ -27,7 +29,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _showPassword = false;
-  bool _signInApiInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +101,18 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    Visibility(
-                      visible: _signInApiInProgress == false,
-                      replacement: const CenteredProgressIndicator(),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _onTapNextButton();
-                        },
-                        child: const Icon(Icons.arrow_circle_right_outlined),
-                      ),
-                    ),
+                    GetBuilder<SignInController>(builder: (signInController) {
+                      return Visibility(
+                        visible: signInController.signInApiInProgress == false,
+                        replacement: const CenteredProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _onTapNextButton();
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      );
+                    }),
                     const SizedBox(
                       height: 36,
                     ),
@@ -159,51 +162,19 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _onTapNextButton() {
+  Future<void> _onTapNextButton() async {
     if (_formKey.currentState!.validate()) {
-      _singIn();
-    }
-  }
-
-  Future<void> _singIn() async {
-    _signInApiInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestData = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text,
-    };
-
-    final NetworkResponse networkResponse =
-        await NetworkCaller.postRequest(Urls.login, body: requestData);
-
-    _signInApiInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-
-    if (networkResponse.isSuccess) {
-      LoginModel loginModel = LoginModel.fromJson(networkResponse.responseData);
-      await AuthController.saveUserAccessToken(loginModel.token!);
-      await AuthController.saveUserData(loginModel.userModel!);
-
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MainBottomNavScreen(),
-          ),
-        );
-      }
-    } else {
-      if (mounted) {
-        showSnackBarMassage(
-          context,
-          networkResponse.errorMassage ??
-              'Email or Password Wrong.Please Try Again',
-        );
+      final SignInController signInController = Get.find<SignInController>();
+      final bool result = await signInController.singIn(
+        _emailTEController.text.trim(),
+        _passwordTEController.text.trim(),
+      );
+      if (result) {
+        Get.offAll(() => const MainBottomNavScreen());
+      } else {
+        if (mounted) {
+          showSnackBarMassage(context, signInController.errorMassage);
+        }
       }
     }
   }
