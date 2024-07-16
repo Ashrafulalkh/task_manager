@@ -1,12 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/ui/controller/auth_controller.dart';
 import 'package:task_manager/ui/controller/sign_in_controller.dart';
-import 'package:task_manager/ui/data/models/login_model.dart';
-import 'package:task_manager/ui/data/models/network_response.dart';
-import 'package:task_manager/ui/data/network_caller/network_caller.dart';
-import 'package:task_manager/ui/data/utilities/urls.dart';
 import 'package:task_manager/ui/screens/auth%20screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/auth%20screen/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
