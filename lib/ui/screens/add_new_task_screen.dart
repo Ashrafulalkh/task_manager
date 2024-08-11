@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/ui/controller/add_new_task_controller.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
+import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
 import 'package:task_manager/ui/widgets/profile_app_bar.dart';
 import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
@@ -15,12 +16,15 @@ class AddNewTaskScreen extends StatefulWidget {
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController = TextEditingController();
+  final TextEditingController _descriptionTEController =
+      TextEditingController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late GlobalKey<FormState> _formKey;
 
   @override
   Widget build(BuildContext context) {
+    _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: profileAppBar(context),
       body: BackGroundWidgets(
@@ -69,13 +73,20 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           addNewTaskController.addNewTaskInProgress == false,
                       replacement: const CenteredProgressIndicator(),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            Get.find<AddNewTaskController>().addNewTask(
+                            bool success =
+                                await Get.find<AddNewTaskController>()
+                                    .addNewTask(
                               _titleTEController.text.trim(),
                               _descriptionTEController.text.trim(),
                             );
-                            clearTextFields();
+                            if (success) {
+                              clearTextFields();
+                              getSnackbar('Success', 'New Task Added Successfully', Colors.green);
+                            } else {
+                              getSnackbar('Failed', 'Add New Task Failed!! Try Again', Colors.red);
+                            }
                           }
                         },
                         child: const Text('Add'),
@@ -102,5 +113,4 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     _descriptionTEController.dispose();
     super.dispose();
   }
-
 }
