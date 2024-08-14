@@ -59,7 +59,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         if (value?.trim().isEmpty ?? true) {
                           return 'Enter Your Email';
                         }
-                        if (AppConstants.emailRegExp.hasMatch(value!) == false) {
+                        if (AppConstants.emailRegExp.hasMatch(value!) ==
+                            false) {
                           return 'Enter Valid Email Address';
                         }
                         return null;
@@ -174,21 +175,11 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapSignUpButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
-      ),
-    );
+    Get.to(() => const SignUpScreen());
   }
 
   void _onTapForgotPasswordButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const EmailVerificationScreen(),
-      ),
-    );
+    Get.to(() => const EmailVerificationScreen());
   }
 
   @override

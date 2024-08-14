@@ -5,7 +5,6 @@ import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
 import 'package:task_manager/ui/widgets/profile_app_bar.dart';
-import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -16,15 +15,13 @@ class AddNewTaskScreen extends StatefulWidget {
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController =
-      TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
 
-  late GlobalKey<FormState> _formKey;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    _formKey = GlobalKey<FormState>();
-
     return Scaffold(
       appBar: profileAppBar(context),
       body: BackGroundWidgets(
