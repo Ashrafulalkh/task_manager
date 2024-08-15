@@ -81,8 +81,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   void _onTapAddButton() {
-    Get.to(
-      () => const AddNewTaskScreen(),
+    Get.to(() => const AddNewTaskScreen(),
     );
   }
 
