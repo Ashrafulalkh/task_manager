@@ -3,6 +3,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:task_manager/controller_binder.dart';
 import 'package:task_manager/ui/screens/auth%20screen/splash_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
@@ -17,6 +18,7 @@ class _TaskManagerState extends State<TaskManager> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       navigatorKey: TaskManager.navigatorKey,
       home: const SplashScreen(),
       theme: lightThemeData(),

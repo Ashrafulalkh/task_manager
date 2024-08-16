@@ -1,17 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
-import 'package:task_manager/ui/data/models/network_response.dart';
-import 'package:task_manager/ui/data/models/user_model.dart';
-import 'package:task_manager/ui/data/network_caller/network_caller.dart';
-import 'package:task_manager/ui/data/utilities/urls.dart';
+import 'package:task_manager/ui/controller/pick_profile_pic_controller.dart';
+import 'package:task_manager/ui/controller/update_profile_controller.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
+import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
 import 'package:task_manager/ui/widgets/profile_app_bar.dart';
-import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -28,8 +23,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  XFile? _selectedImage;
-  bool _updateProfileInProgess = false;
 
   @override
   void initState() {
@@ -104,14 +97,37 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  Visibility(
-                    visible: _updateProfileInProgess == false,
-                    replacement: const CenteredProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: updateProfile,
-                      child: const Icon(Icons.arrow_forward),
-                    ),
-                  )
+                  GetBuilder<UpdateProfileController>(
+                      builder: (updateProfileController) {
+                    return Visibility(
+                      visible: updateProfileController.updateProfileInProgess ==
+                          false,
+                      replacement: const CenteredProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          bool success =
+                              await updateProfileController.updateProfile(
+                            _emailTEController.text,
+                            _firstNameTEController.text,
+                            _lastNameTEController.text,
+                            _numberTEController.text,
+                            _passwordTEController.text,
+                          );
+
+                          if (success) {
+                            getSnackbar('Update Profile',
+                                'Profile Updated Successfully', Colors.green);
+                          } else {
+                            getSnackbar(
+                                'Update Profile',
+                                'Profile Update Failed!! Try Again',
+                                Colors.red);
+                          }
+                        },
+                        child: const Icon(Icons.arrow_forward),
+                      ),
+                    );
+                  })
                 ],
               ),
             ),
@@ -123,7 +139,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   Widget _buildPhotoPickerWidgets() {
     return GestureDetector(
-      onTap: picProfilePicture,
+      onTap: () async {
+        Get.find<PickProfilePicController>().picProfilePicture();
+      },
       child: Container(
         width: double.maxFinite,
         height: 48,
@@ -154,13 +172,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 16,),
+            const SizedBox(
+              width: 16,
+            ),
             Expanded(
                 child: Text(
-                  _selectedImage?.name ?? 'No Image Selected',
-                  maxLines: 1,
-                  style: const TextStyle(overflow: TextOverflow.ellipsis),
-                )),
+              Get.find<PickProfilePicController>().selectedImage?.name ??
+                  'No Image Selected',
+              maxLines: 1,
+              style: const TextStyle(overflow: TextOverflow.ellipsis),
+            )),
           ],
         ),
       ),
@@ -176,69 +197,4 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _passwordTEController.dispose();
     super.dispose();
   }
-
-  Future<void> updateProfile() async {
-    _updateProfileInProgess = true;
-    String encodedPhoto = AuthController.userData?.photo ?? '';
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String,dynamic> requestBody = {
-      "email":_emailTEController.text.trim(),
-      "firstName":_firstNameTEController.text.trim(),
-      "lastName":_lastNameTEController.text.trim(),
-      "mobile":_numberTEController.text.trim(),
-    };
-
-    if(_passwordTEController.text.isNotEmpty) {
-      requestBody['password'] = _passwordTEController.text;
-    }
-
-    if(_selectedImage != null) {
-      File file = File(_selectedImage!.path);
-      encodedPhoto = base64Encode(file.readAsBytesSync());
-      requestBody['photo'] = encodedPhoto;
-    }
-
-    NetworkResponse response = await NetworkCaller.postRequest(Urls.updateProfile,body: requestBody);
-
-    if(response.isSuccess && response.responseData['status'] == 'success') {
-      UserModel userModel = UserModel(
-        email: _emailTEController.text,
-        firstName: _firstNameTEController.text,
-        lastName: _lastNameTEController.text,
-        mobile: _numberTEController.text,
-        photo: encodedPhoto,
-      );
-      await AuthController.saveUserData(userModel);
-      if(mounted) {
-        showSnackBarMassage(context, 'Profile Updated Successfully');
-      }
-      _updateProfileInProgess = false;
-      if(mounted) {
-        setState(() {});
-      }
-
-    }else {
-      if(mounted) {
-        showSnackBarMassage(context, response.errorMassage ?? 'profile Updating Failed!! Try Again');
-      }
-    }
-
-
-  }
-
-  Future<void> picProfilePicture() async {
-    final imagePicker = ImagePicker();
-    final result = await imagePicker.pickImage(source: ImageSource.camera);
-
-    if(result != null) {
-      _selectedImage = result;
-      if(mounted) {
-        setState(() {});
-      }
-    }
-  }
-
 }

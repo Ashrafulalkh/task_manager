@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -167,9 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (result) {
         Get.offAll(() => const MainBottomNavScreen());
       } else {
-        if (mounted) {
-          showSnackBarMassage(context, signInController.errorMassage);
-        }
+        failedSnackbarMassage('Sign In', 'Sign In Failed!! Check and Try Again');
       }
     }
   }

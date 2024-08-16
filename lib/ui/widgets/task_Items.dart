@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/data/models/network_response.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controller/delete_task_controller.dart';
+import 'package:task_manager/ui/controller/edit_task_controller.dart';
 import 'package:task_manager/ui/data/models/task_model.dart';
-import 'package:task_manager/ui/data/network_caller/network_caller.dart';
-import 'package:task_manager/ui/data/utilities/urls.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
@@ -11,18 +11,18 @@ class TaskItems extends StatefulWidget {
     super.key,
     required this.taskModel,
     required this.onUpdateTask,
+    required this.colors,
   });
 
   final TaskModel taskModel;
   final VoidCallback onUpdateTask;
+  final Color? colors;
 
   @override
   State<TaskItems> createState() => _TaskItemsState();
 }
 
 class _TaskItemsState extends State<TaskItems> {
-  bool _deleteInProgress = false;
-  bool _editInProgress = false;
   String dropdownValue = '';
 
   List<String> statusList = ['New', 'Completed', 'InProgress', 'Cancelled'];
@@ -37,6 +37,7 @@ class _TaskItemsState extends State<TaskItems> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      shadowColor: Colors.grey,
       color: Colors.white,
       child: ListTile(
         title: Text(widget.taskModel.title ?? 'Unknown'),
@@ -44,8 +45,11 @@ class _TaskItemsState extends State<TaskItems> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.taskModel.description ?? 'Unknown'),
+            const SizedBox(
+              height: 6,
+            ),
             Text(
-              'Date: ${widget.taskModel.createdDate}',
+              'Created: ${widget.taskModel.createdDate}',
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.w600),
             ),
@@ -53,52 +57,86 @@ class _TaskItemsState extends State<TaskItems> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  label: Text(widget.taskModel.status ?? 'New'),
+                  backgroundColor: widget.colors,
+                  label: Text(
+                    widget.taskModel.status ?? 'New',
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
                 ),
-                ButtonBar(
+                OverflowBar(
                   children: [
-                    Visibility(
-                      visible: _editInProgress == false,
-                      replacement: const CenteredProgressIndicator(),
-                      child: PopupMenuButton<String>(
-                        icon: const Icon(Icons.edit),
-                        onSelected: (String selected) {
-                          dropdownValue = selected;
-                          _editTaskStatus();
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return statusList.map((String value) {
-                            return PopupMenuItem<String>(
-                              value: value,
-                              child: ListTile(
-                                title: Text(value),
-                                trailing: dropdownValue == value
-                                    ? const Icon(Icons.done)
-                                    : null,
-                              ),
+                    GetBuilder<EditTaskController>(
+                        builder: (editTaskController) {
+                      return Visibility(
+                        visible: editTaskController.editInProgress == false,
+                        replacement: const CenteredProgressIndicator(),
+                        child: PopupMenuButton<String>(
+                          icon: const Icon(Icons.edit),
+                          onSelected: (String selected) async {
+                            dropdownValue = selected;
+                            bool sunccess =
+                                await editTaskController.editTaskStatus(
+                                    widget.taskModel.sId!,
+                                    dropdownValue,
+                                    widget.onUpdateTask());
+
+                            if (sunccess) {
+                              successSnackbarMassage('Edit', 'Task Status Edit Successflly done');
+                            } else {
+                              failedSnackbarMassage('Edit',
+                                  'Task Status Edit Failed!! Try Again');
+                            }
+
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          itemBuilder: (BuildContext context) {
+                            return statusList.map((String value) {
+                              return PopupMenuItem<String>(
+                                value: value,
+                                child: ListTile(
+                                  title: Text(value),
+                                  trailing: dropdownValue == value
+                                      ? const Icon(Icons.done)
+                                      : null,
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      );
+                    }),
+                    GetBuilder<DeleteTaskController>(
+                        builder: (deleteTaskController) {
+                      return Visibility(
+                        visible: deleteTaskController.deleteInProgress == false,
+                        replacement: const CenteredProgressIndicator(),
+                        child: IconButton(
+                          onPressed: () async {
+                            bool success =
+                                await deleteTaskController.deleteTask(
+                              widget.taskModel.sId!,
+                              widget.onUpdateTask(),
                             );
-                          }).toList();
-                        },
-                      ),
-                    ),
-                    Visibility(
-                      visible: _deleteInProgress == false,
-                      replacement: const CenteredProgressIndicator(),
-                      child: IconButton(
-                        onPressed: () {
-                          _deleteTask();
-                        },
-                        icon: const Icon(Icons.delete,color: Colors.red),
-                      ),
-                    ),
+                            if (success) {
+                              successSnackbarMassage(
+                                  'Delete', 'Task Deleted Successfully');
+                            } else {
+                              failedSnackbarMassage(
+                                  'Delete', 'Task Delete Failed!! Try Again');
+                            }
+                          },
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ],
@@ -107,52 +145,5 @@ class _TaskItemsState extends State<TaskItems> {
         ),
       ),
     );
-  }
-
-  Future<void> _deleteTask() async {
-    _deleteInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    NetworkResponse response =
-        await NetworkCaller.getRequest(Urls.deleteTask(widget.taskModel.sId!));
-    if (response.isSuccess) {
-      widget.onUpdateTask();
-    } else {
-      if (mounted) {
-        showSnackBarMassage(context,
-            response.errorMassage ?? 'Task Count By Status Failed! Try Again');
-      }
-    }
-    _deleteInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> _editTaskStatus() async {
-    _editInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    NetworkResponse response = await NetworkCaller.getRequest(
-        Urls.editTask(widget.taskModel.sId!, dropdownValue));
-
-    if(response.isSuccess) {
-      widget.onUpdateTask();
-    }else {
-      if(mounted) {
-        showSnackBarMassage(context,
-            response.errorMassage ?? 'Task Status Update Failed! Try Again');
-      }
-    }
-
-    _editInProgress = false;
-    if(mounted) {
-      setState(() {});
-    }
-
   }
 }

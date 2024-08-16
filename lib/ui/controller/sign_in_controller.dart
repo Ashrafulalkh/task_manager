@@ -7,10 +7,8 @@ import 'package:task_manager/ui/data/utilities/urls.dart';
 
 class SignInController extends GetxController{
   bool _signInApiInProgress = false;
-  String _errorMassage = '';
 
   get signInApiInProgress => _signInApiInProgress;
-  String get errorMassage => _errorMassage;
 
   Future<bool> singIn(String email,String password) async {
     bool isSuccess = false;
@@ -33,10 +31,7 @@ class SignInController extends GetxController{
 
       isSuccess = true;
 
-    } else {
-      _errorMassage = networkResponse.errorMassage ?? 'Login Failed';
     }
-
     _signInApiInProgress = false;
     update();
 
