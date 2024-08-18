@@ -11,7 +11,9 @@ class InProgressTaskController extends GetxController {
   String _errorMassage = '';
 
   bool get getInProgressTaskInProgress => _getInProgressTaskInProgress;
+
   List<TaskModel> get inProgressTaskList => _inProgressTaskList;
+
   String get errorMassage => _errorMassage;
 
   Future<bool> getInProgressTask() async {

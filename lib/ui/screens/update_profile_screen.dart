@@ -5,8 +5,8 @@ import 'package:task_manager/ui/controller/pick_profile_pic_controller.dart';
 import 'package:task_manager/ui/controller/update_profile_controller.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
 import 'package:task_manager/ui/widgets/profile_app_bar.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -115,13 +115,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           );
 
                           if (success) {
-                            getSnackbar('Update Profile',
-                                'Profile Updated Successfully', Colors.green);
+                            successSnackbarMassage('Update Profile',
+                                'Profile Updated Successfully');
                           } else {
-                            getSnackbar(
-                                'Update Profile',
-                                'Profile Update Failed!! Try Again',
-                                Colors.red);
+                            failedSnackbarMassage('Update Profile',
+                                'Profile Update Failed!! Try Again');
                           }
                         },
                         child: const Icon(Icons.arrow_forward),

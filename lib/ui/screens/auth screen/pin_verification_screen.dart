@@ -7,7 +7,7 @@ import 'package:task_manager/ui/screens/auth%20screen/sign_in_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({super.key, required this.email});
@@ -65,13 +65,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                             _pinTEController.text.trim(),
                           );
                           if (success) {
-                            getSnackbar('Pin Verification',
-                                'Pin Verification Successfull', Colors.green);
+                            successSnackbarMassage('Pin Verification',
+                                'Pin Verification Successfull');
                           } else {
-                            getSnackbar(
-                                'Pin Verification',
-                                'Pin Verification Failed!! Try Again',
-                                Colors.red);
+                            failedSnackbarMassage('Pin Verification',
+                                'Pin Verification Failed!! Try Again');
                           }
                         },
                         child: const Text('Verify'),

@@ -5,7 +5,7 @@ import 'package:task_manager/ui/controller/sign_up_controller.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/utilities/app_constants.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -172,9 +172,9 @@ class _SignInScreenState extends State<SignUpScreen> {
                                       _passwordTEController.text);
                                  if(success) {
                                    _clearTextFields();
-                                   getSnackbar('Sign Up', 'Sign Up Successfull', Colors.green);
+                                   successSnackbarMassage('Sign Up', 'Sign Up Successfull');
                                  }else {
-                                   getSnackbar('Sign Up', 'Sign Up Failed!! Try Again', Colors.red);
+                                   failedSnackbarMassage('Sign Up', 'Sign Up Failed!! Try Again');
                                  }
 
                                 }

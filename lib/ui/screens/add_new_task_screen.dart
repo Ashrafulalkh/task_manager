@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:task_manager/ui/controller/add_new_task_controller.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
 import 'package:task_manager/ui/widgets/profile_app_bar.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -80,9 +80,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                             );
                             if (success) {
                               clearTextFields();
-                              getSnackbar('Success', 'New Task Added Successfully', Colors.green);
+                              successSnackbarMassage('Success', 'New Task Added Successfully');
                             } else {
-                              getSnackbar('Failed', 'Add New Task Failed!! Try Again', Colors.red);
+                              failedSnackbarMassage('Failed', 'Add New Task Failed!! Try Again');
                             }
                           }
                         },

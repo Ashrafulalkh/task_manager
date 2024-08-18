@@ -5,11 +5,8 @@ import 'package:task_manager/ui/data/utilities/urls.dart';
 
 class AddNewTaskController extends GetxController {
   bool _addNewTaskInProgress = false;
-  String _errorMassage = '';
 
   bool get addNewTaskInProgress => _addNewTaskInProgress;
-
-  String get errorMassage => _errorMassage;
 
   Future<bool> addNewTask(String tittle, String description) async {
     bool isSuccess = false;
@@ -28,8 +25,6 @@ class AddNewTaskController extends GetxController {
 
     if (response.isSuccess) {
       isSuccess = true;
-    } else {
-      _errorMassage = response.errorMassage ?? 'Add New Task Failed!';
     }
     _addNewTaskInProgress = false;
     update();

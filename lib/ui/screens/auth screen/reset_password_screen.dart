@@ -6,7 +6,7 @@ import 'package:task_manager/ui/screens/auth%20screen/sign_in_screen.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen(
@@ -72,15 +72,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             _passwordTEController.text.trim(),
                           );
                           if (success) {
-                            getSnackbar(
-                                'Reset Password',
-                                'Reset Password Successfully Done',
-                                Colors.green);
+                            successSnackbarMassage('Reset Password',
+                                'Reset Password Successfully Done');
                           } else {
-                            getSnackbar(
-                                'Reset Password',
-                                'Reset Password Failed!! Try Again',
-                                Colors.red);
+                            failedSnackbarMassage('Reset Password',
+                                'Reset Password Failed!! Try Again');
                           }
                         },
                         child: const Icon(Icons.arrow_circle_right_outlined),

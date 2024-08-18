@@ -5,7 +5,7 @@ import 'package:task_manager/ui/controller/email_verification_controller.dart';
 import 'package:task_manager/ui/utilities/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widgets.dart';
 import 'package:task_manager/ui/widgets/centered_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/get_snackbar_massage.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -69,15 +69,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           );
 
                           if (success) {
-                            getSnackbar(
-                                'Email Verification',
-                                'Verification Pin Successfully Sent To Your Email',
-                                Colors.green);
-                          }else {
-                            getSnackbar(
-                                'Email Verification',
-                                'Email Verification Failed!! Try Again',
-                                Colors.red);
+                            successSnackbarMassage('Email Verification',
+                                'Verification Pin Successfully Sent To Your Email');
+                          } else {
+                            failedSnackbarMassage('Email Verification',
+                                'Email Verification Failed!! Try Again');
                           }
                         },
                         child: const Icon(Icons.arrow_circle_right_outlined),

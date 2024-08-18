@@ -11,7 +11,10 @@ class TaskCountByStatusController extends GetxController {
   String _errorMassage = '';
 
   get getTaskCountByStatusInProgress => _getTaskCountByStatusInProgress;
-  List<TaskCountByStatusModel> get taskCountByStatusList => _taskCountByStatusList;
+
+  List<TaskCountByStatusModel> get taskCountByStatusList =>
+      _taskCountByStatusList;
+
   String get errorMassage => _errorMassage;
 
   Future<bool> getTaskCountByStatus() async {
@@ -20,17 +23,19 @@ class TaskCountByStatusController extends GetxController {
     update();
 
     NetworkResponse response =
-    await NetworkCaller.getRequest(Urls.taskStatusCount);
+        await NetworkCaller.getRequest(Urls.taskStatusCount);
     if (response.isSuccess) {
       TaskCountByStatusWrapperModel taskCountByStatusWrapperModel =
-      TaskCountByStatusWrapperModel.fromJson(response.responseData);
-      _taskCountByStatusList = taskCountByStatusWrapperModel.taskCountByStatusList ?? [];
+          TaskCountByStatusWrapperModel.fromJson(response.responseData);
+      _taskCountByStatusList =
+          taskCountByStatusWrapperModel.taskCountByStatusList ?? [];
     } else {
-      _errorMassage = response.errorMassage ?? 'Task Count By Status Failed! Try Again';
-      }
+      _errorMassage =
+          response.errorMassage ?? 'Task Count By Status Failed! Try Again';
+    }
     _getTaskCountByStatusInProgress = false;
     update();
 
     return isSuccess;
-    }
   }
+}
